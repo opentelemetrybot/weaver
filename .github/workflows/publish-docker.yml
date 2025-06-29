@@ -1,8 +1,6 @@
 name: Weaver Docker Generator
-
 permissions:
   contents: read
-
 on:
   push:
     tags: [ '**' ]

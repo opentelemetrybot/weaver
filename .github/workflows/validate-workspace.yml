@@ -1,5 +1,8 @@
 name: Validate the Cargo workspace.
 
+permissions:
+  contents: read
+
 on: [pull_request]
 
 jobs:

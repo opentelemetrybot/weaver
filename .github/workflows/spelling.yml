@@ -1,9 +1,9 @@
 name: Spelling
 
+on: [push, pull_request]
+
 permissions:
   contents: read
-
-on: [push, pull_request]
 
 env:
   RUST_BACKTRACE: 1

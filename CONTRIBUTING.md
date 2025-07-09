@@ -159,9 +159,9 @@ For github groups see the [codeowners](CODEOWNERS) file.
 
 ### Maintainers (@open-telemetry/weaver-maintainers)
 
-- [Laurent Quérel](https://github.com/lquerel) F5 Networks
-- [Josh Suereth](https://github.com/jsuereth) Google LLC
 - [Jeremy Blythe](https://github.com/jerbly) Evertz
+- [Josh Suereth](https://github.com/jsuereth) Google LLC
+- [Laurent Quérel](https://github.com/lquerel) F5 Networks
 
 ### Approvers
 

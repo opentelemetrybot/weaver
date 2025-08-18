@@ -216,37 +216,45 @@ class WorkflowPermissionsVerifier:
         file_path = result['file_path']
         relative_path = os.path.relpath(file_path)
         
-        status_icon = ""
+        # Update statistics regardless of whether we print
         if result['is_valid']:
             if result['warnings']:
-                status_icon = "⚠️ "
                 self.files_with_warnings += 1
             else:
-                status_icon = "✅"
                 self.files_passed += 1
         else:
-            status_icon = "❌"
             self.files_with_errors += 1
         
-        auto_gen_indicator = " (auto-generated)" if result['is_auto_generated'] else ""
-        print(f"{status_icon} {relative_path}{auto_gen_indicator}")
-        
-        # Print errors
-        for error in result['errors']:
-            print(f"   ERROR: {error}")
-        
-        # Print warnings
-        for warning in result['warnings']:
-            print(f"   WARNING: {warning}")
-        
-        # Print job analysis if there are jobs with permissions
-        job_analysis = result['job_analysis']
-        jobs_with_permissions = [name for name, analysis in job_analysis.items() if analysis['has_permissions']]
-        
-        if jobs_with_permissions:
-            print(f"   📝 Jobs with permissions: {', '.join(jobs_with_permissions)}")
-        
-        print()  # Empty line for readability
+        # Only print if this method is not suppressed
+        if not hasattr(self, '_suppress_output'):
+            status_icon = ""
+            if result['is_valid']:
+                if result['warnings']:
+                    status_icon = "⚠️ "
+                else:
+                    status_icon = "✅"
+            else:
+                status_icon = "❌"
+            
+            auto_gen_indicator = " (auto-generated)" if result['is_auto_generated'] else ""
+            print(f"{status_icon} {relative_path}{auto_gen_indicator}")
+            
+            # Print errors
+            for error in result['errors']:
+                print(f"   ERROR: {error}")
+            
+            # Print warnings
+            for warning in result['warnings']:
+                print(f"   WARNING: {warning}")
+            
+            # Print job analysis if there are jobs with permissions
+            job_analysis = result['job_analysis']
+            jobs_with_permissions = [name for name, analysis in job_analysis.items() if analysis['has_permissions']]
+            
+            if jobs_with_permissions:
+                print(f"   📝 Jobs with permissions: {', '.join(jobs_with_permissions)}")
+            
+            print()  # Empty line for readability
     
     def verify_all_workflows(self, directory: str = '.') -> Dict[str, Any]:
         """Verify all workflow files in the given directory."""
@@ -333,15 +341,10 @@ Examples:
     
     # Temporarily suppress individual file output if quiet mode
     if args.quiet:
-        original_print_file_result = verifier.print_file_result
-        verifier.print_file_result = lambda result: None
+        verifier._suppress_output = True
     
     try:
         summary = verifier.verify_all_workflows(args.directory)
-        
-        if args.quiet:
-            # Restore original method and print summary
-            verifier.print_file_result = original_print_file_result
     
     except KeyboardInterrupt:
         print("\n\nVerification interrupted by user")
